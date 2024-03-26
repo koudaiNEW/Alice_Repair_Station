@@ -76,12 +76,20 @@ filetree
 
 ```
 
-
-
-
-
 ### 开发的架构 
+- alice服务
+  - python --> NLTK ..
+  - cq http
+  
+- 综合后端
+  - C/C++ --> http_parser QT workflow ..
+  - python --> Django ..
+  - java -->
+  - go -->
 
+  
+- 综合前端
+  
 
 
 ### 部署
