@@ -11,7 +11,7 @@
 <br />
 
 <p align="center">
-  <a href="https://github.com/koudaiNEW/Alice_Repair_Station">
+  <a href="https://github.com/koudaiNEW/Alice_Repair_Station/">
     <img src="git_resource/勘ぐれい.jpg" alt="Logo" width="160" height="200">
   </a>
 
@@ -97,10 +97,6 @@ filetree
   - 使用爬虫框架？
 - 使用评论训练模型，让模型自己根据已有评论给出评分及评论
 
-### 需求
-- 爬取动漫资讯，评论及评分(需要提供网站)
- - 使用爬虫框架？
-- 使用评论训练模型，让模型自己根据已有评论给出评分及评论
 
 
 ### 部署
