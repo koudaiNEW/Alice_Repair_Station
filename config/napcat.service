@@ -1,0 +1,11 @@
+[Unit]
+Description=Run napcat service.
+After=network.service docker.service
+
+[Service]
+ExecStart=/opt/napcat_start.sh
+Restart=on-failure
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target
