@@ -1,7 +1,11 @@
 {
-        "bot number": "qq number",
-        "napcat post port": 5307,
-        "napcat event port": 5308,
+        "bot number": "null",
+        "napcat post port": 0,
+        "napcat event port": 0,
         "post token": "null",
-        "event token": "null"
+        "event token": "null",
+        "local model": "null",
+        "yun url":"",
+        "yun model":"",
+        "yun key":""
 }
