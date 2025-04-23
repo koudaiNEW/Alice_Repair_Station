@@ -1,13 +1,14 @@
 import socket, requests, json, select
 from yunAi_api import YunAi_API
 from napcat_api import Napcat_API
+from loguru import logger
 
 class QQ_API:
         def __init__(self):
                 with open("./config.json", 'r', encoding = 'utf-8') as f:
                         self.config = json.loads(f.read())
-                self.yunAi_API = YunAi_API(self.config['yun key'], self.config['yun url'])
-                self.napcat_API = Napcat_API(self.config['napcat post port'], self.config['post token'])
+                self.yunAi_API = YunAi_API(self.config['yun key'], self.config['yun url'], self.config['yun model'])
+                self.napcat_API = Napcat_API(self.config['napcat url'], self.config['napcat post port'], self.config['post token'])
         def Data_Analysis(self, link_socket, request):
                 send_flag = False
                 # 查找json
@@ -19,25 +20,28 @@ class QQ_API:
                         if request[len(request) - i - 1] == '}':
                                 request = request[:len(request) - i]
                                 break
-                print(request)
+                logger.debug(request)
                 body = json.loads(request)
                 # 处理消息
                 for i in range(len(body['message'])):
                         if body['message'][i]['type'] == "at" and body['message'][i]['data']['qq'] == self.config['bot number']:
-                                print('[MSG] 接收[at]')
                                 send_flag = True
                         if body['message'][i]['type'] == "text":
                                 sendToChat_message = body['message'][i]['data']['text']
                 # 回复
                 if body['message_type'] == "group":
-                        print('[MSG] 接收[group(' + str(body['group_id']) + ')' + str(body['sender']['nickname']) + '(' + str(body['user_id']) + ')]: ' + str(body['raw_message']))
-                        if send_flag == True:
-                                back_message = self.yunAi_API.Chat_Send(self.config['yun model'], sendToChat_message)
+                        # print('[MSG] 接收[group(' + str(body['group_id']) + ')' + str(body['sender']['nickname']) + '(' + str(body['user_id']) + ')]: ' + str(body['raw_message']))
+                        if send_flag == True and sendToChat_message:
+                                logger.info('接收群at, [group('+ str(body['group_id']) + ')' + str(body['sender']['nickname']) + '(' + str(body['user_id']) + ')]: ' + sendToChat_message)
+                                back_message = self.yunAi_API.Chat_Send(sendToChat_message)
+                                logger.info('回复群at: ' + back_message)
                                 self.napcat_API.send_group_msg(body['group_id'], body['message_id'], back_message)
                 elif body['message_type'] == "private":
-                        print('[MSG] 接收[' + str(body['sender']['nickname']) + '(' + str(body['user_id']) + ')]: ' + str(body['raw_message']))
+                        # print('[MSG] 接收[' + str(body['sender']['nickname']) + '(' + str(body['user_id']) + ')]: ' + str(body['raw_message']))
                         if sendToChat_message:
-                                back_message = self.yunAi_API.Chat_Send(self.config['yun model'], sendToChat_message)
+                                logger.info('接收私聊，['+ str(body['sender']['nickname']) + '(' + str(body['user_id']) + ')]: ' + sendToChat_message)
+                                back_message = self.yunAi_API.Chat_Send(sendToChat_message)
+                                logger.info('回复私聊: ' + back_message)
                                 self.napcat_API.send_private_msg(body['user_id'], back_message)
 
 
@@ -74,4 +78,4 @@ class QQ_API:
                                                         epl.unregister(fd)
                                                         del fd_event_dict[fd]
                         except Exception as e:
-                                print(e)
+                                logger.error(f"{e}")

@@ -1,12 +1,13 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json, requests
-
+from loguru import logger
 
 
 class Napcat_API():
-        def __init__(self, post_port:int, post_token:str):
+        def __init__(self, url:str, post_port:int, post_token:str):
                         self.port = str(post_port)
                         self.token = post_token
+                        self.url = url
 
         def send_group_msg(self, group_id, reply_id, msg):
                 if reply_id:
@@ -39,7 +40,7 @@ class Napcat_API():
                                         }
                                 ]
                         })
-                requests.request("POST", url='http://127.0.0.1:'+self.port+'/send_group_msg', headers={'Content-Type':'application/json'}, data=body)
+                requests.request("POST", url=self.url+':'+self.port+'/send_group_msg', headers={'Content-Type':'application/json'}, data=body)
 
         def send_private_msg(self, user_id, msg):
                 body = json.dumps({
@@ -53,4 +54,4 @@ class Napcat_API():
                                 }
                         ]
                 })
-                requests.request("POST", url='http://127.0.0.1:'+self.port+'/send_private_msg', headers={'Content-Type':'application/json'}, data=body)
+                requests.request("POST", url=self.url+':'+self.port+'/send_private_msg', headers={'Content-Type':'application/json'}, data=body)
